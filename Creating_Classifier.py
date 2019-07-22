@@ -29,7 +29,8 @@ from nltk.corpus import reuters
 
 #print("reuters.words = ",reuters.words())
 #print("reuters.categories = ",reuters.categories())
-#print("reuters.sents = ",reuters.sents())
+print("reuters.sents = ",reuters.sents()[0])
+print("Len of reuters.sents() =",len(reuters.sents()))
 
 '''
 hotel_rev = ["Great place to be when you are in Bangalore.",
@@ -72,6 +73,19 @@ pos = 0
 neg = 0
 polarity_list = []
 sentncs_list = []
+
+for i in range(len(reuters.sents())):
+    sentncs = " ".join(reuters.sents()[i])
+    #print("sentncs = ", sentncs)
+    blob = TextBlob(sentncs)
+    sentncs_list.append(sentncs)
+    if blob.sentiment.polarity > 0:
+        polarity_list.append('pos')
+        pos = pos + 1
+    elif blob.sentiment.polarity < 0:
+        polarity_list.append('neg')
+        neg = neg + 1
+'''
 for i in range(len(reutersDf)):
     #print(type(reutersDf['text'][i]))
     #print(reutersDf['text'][i])
@@ -91,7 +105,7 @@ for i in range(len(reutersDf)):
             #reutersDf['polarity'].loc[ reutersDf.text == reutersDf['text'][i] ] = 'neg'
             polarity_list.append('neg')
             neg = neg + 1
-
+'''
 raw_data = list(zip(sentncs_list,polarity_list))
 print(reutersDf.tail(10))
 print("raw_data len = ",len(raw_data))
