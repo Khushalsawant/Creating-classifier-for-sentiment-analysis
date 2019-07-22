@@ -21,6 +21,7 @@ import datetime
 start_time = time.time()
 
 import pandas as pd
+import numpy as np
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import sent_tokenize
 
@@ -62,6 +63,8 @@ for file in fileids:
 # Combine lists into pandas dataframe. reutersDf is the final dataframe.
 reutersDf = pd.DataFrame({'ids':fileids, 'categories':categories, 'text':text})
 
+#print(reutersDf['text'].head(5))
+
 #print(reutersDf['text'])
 reutersDf['polarity'] = 'pos'
 
@@ -74,7 +77,8 @@ neg = 0
 polarity_list = []
 sentncs_list = []
 
-for i in range(len(reuters.sents())):
+#for i in range(len(reuters.sents())):
+for i in range(10000):    
     sentncs = " ".join(reuters.sents()[i])
     #print("sentncs = ", sentncs)
     blob = TextBlob(sentncs)
@@ -107,7 +111,7 @@ for i in range(len(reutersDf)):
             neg = neg + 1
 '''
 raw_data = list(zip(sentncs_list,polarity_list))
-print(reutersDf.tail(10))
+#print(reutersDf.tail(10))
 print("raw_data len = ",len(raw_data))
 print("Total pos = ",pos," Total Neg =",neg)
 print(raw_data[0])
@@ -117,8 +121,9 @@ print(raw_data[0])
 #raw_data_for_classifier = list(zip(text_list,polarity_list))
 #print("raw_data_for_classifier = ",raw_data_for_classifier)
 
-training = raw_data[18831]
-testing = raw_data[-11790]
+np.random.shuffle(raw_data)
+training = raw_data[:5000]
+testing = raw_data[-5000:]
 
 classifier = classifiers.NaiveBayesClassifier(training)
 
