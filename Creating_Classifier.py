@@ -25,51 +25,29 @@ import numpy as np
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import sent_tokenize
 
-
 from nltk.corpus import reuters
-
-#print("reuters.words = ",reuters.words())
-#print("reuters.categories = ",reuters.categories())
-print("reuters.sents = ",reuters.sents()[0])
-print("Len of reuters.sents() =",len(reuters.sents()))
-
-'''
-hotel_rev = ["Great place to be when you are in Bangalore.",
-"The place was being renovated when I visited so the seating was limited.",
-"Loved the ambience, loved the food"]
-
-sid = SentimentIntensityAnalyzer()
-for sentence in hotel_rev:
-    print(sentence)
-    ss = sid.polarity_scores(sentence)
-    for j in ss:
-        print('{0}: {1}, '.format(j, ss[j]), end='\n ')
-'''
-
-# Raw corpus of Reuters Data
-
-# Extract fileids from the reuters corpus
-fileids = reuters.fileids()
-
-# Initialize empty lists to store categories and raw text
-categories = []
-text = []
-
-# Loop through each file id and collect each files categories and raw text
-for file in fileids:
-    categories.append(reuters.categories(file))
-    text.append(reuters.raw(file))
-
-# Combine lists into pandas dataframe. reutersDf is the final dataframe.
-reutersDf = pd.DataFrame({'ids':fileids, 'categories':categories, 'text':text})
-
-#print(reutersDf['text'].head(5))
-
-#print(reutersDf['text'])
-reutersDf['polarity'] = 'pos'
-
 from textblob import TextBlob
 from textblob import classifiers
+
+
+## Here Value of len(reuters.sents()) = 54716 which is equaly divided by 32
+def split_into_parts(number, n_parts):
+    a_1 = np.array([0.0,1710.0])
+    a = np.around((np.linspace(0, number, n_parts+1)[1:]))
+    b = np.reshape(a, (-1, 2))
+    #b = np.concatenate(b,a_1)
+    print(b)
+    for i in range(len(b)):
+        b[i][0] = b[i][0] +1
+        print(b[i][0])
+    b = np.sort(b,axis=0)
+    return b
+
+broken_number_of_parts = split_into_parts(54716,32)
+print(broken_number_of_parts[0])
+#broken_number_of_parts_2D = np.reshape(broken_number_of_parts, (-1, 2))
+ 
+
 
 df_for_raw = pd.DataFrame(columns=['sentences','polarity'])
 pos = 0
