@@ -151,7 +151,7 @@ if __name__ == "__main__":
     '''
     pool = multiprocessing.Pool(processes=4)
     split_into_parts = pool.starmap(split_into_parts,[(54716,32)])
-    print("split_into_parts = ",split_into_parts)
+    print("Type split_into_parts = ",type(split_into_parts))
     result_list = pool.starmap(create_raw_data_for_classifier,[(0,3000)])#product([(0,100)],repeat=2))
     #print(result_list)
     result_accuracy1 = pool.starmap(get_the_classifier_accuracy,[result_list])#product([(0,100)],repeat=2))
