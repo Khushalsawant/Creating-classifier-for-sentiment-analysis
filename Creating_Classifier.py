@@ -160,6 +160,7 @@ def convert_sec(n):
 if __name__ == "__main__": 
     manager = multiprocessing.Manager()
     print("ID of main process: {}".format(os.getpid()))
+    '''
     return_raw_data = manager.list()
     return_dt_classifier_accuracy = manager.list()
     return_NaiveBayesClassifier = manager.list()
@@ -198,13 +199,14 @@ if __name__ == "__main__":
     
     # check if processes are alive 
     print("Process p2 is alive: {}".format(p2.is_alive()))
-    
+    '''
     pool = multiprocessing.Pool(processes=4)
     result_list = pool.starmap(create_raw_data_for_classifier1,[(0,100)])#product([(0,100)],repeat=2))
     #print(result_list)
     result_accuracy1 = pool.starmap(get_the_classifier_accuracy1,[result_list])#product([(0,100)],repeat=2))
-    print( result_accuracy1)
-    
+    print("result_accuracy1 = ",result_accuracy1)
+    pool.close()
+    pool.join()
     n =  time.time() - start_time
     
     print("---Execution Time ---",convert_sec(n))
