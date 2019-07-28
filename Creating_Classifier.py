@@ -35,6 +35,7 @@ from nltk.corpus import reuters
 from textblob import TextBlob
 from textblob import classifiers
 
+import pickle              # import module first
 
 ## Here Value of len(reuters.sents()) = 54716 which is equaly divided by 32
 def split_into_parts(number, n_parts):
@@ -152,9 +153,20 @@ if __name__ == "__main__":
     pool = multiprocessing.Pool(processes=4)
     split_into_parts = pool.starmap(split_into_parts,[(54716,32)])
     print("Type split_into_parts = ",type(split_into_parts))
-    result_list = pool.starmap(create_raw_data_for_classifier,[(0,3000)])#product([(0,100)],repeat=2))
+    result_list = pool.starmap(create_raw_data_for_classifier,[(0,100)])#product([(0,100)],repeat=2))
+    print("result_list type = ",type(result_list))
+    f = open('raw_data_for_classifier.pkl', 'wb')   # Pickle file is newly created where foo1.py is
+    pickle.dump(result_list, f,-1)          # dump data to f
+    f.close()    
+             
+    f = open('raw_data_for_classifier.pkl', 'rb')   # 'r' for reading; can be omitted
+    raw_data_for_classifier = pickle.load(f)         # load file content as mydict
+    f.close()                       
+
+    #print(raw_data_for_classifier)
+
     #print(result_list)
-    result_accuracy1 = pool.starmap(get_the_classifier_accuracy,[result_list])#product([(0,100)],repeat=2))
+    result_accuracy1 = pool.starmap(get_the_classifier_accuracy,[raw_data_for_classifier])#product([(0,100)],repeat=2))
     print("result_accuracy1 = ",result_accuracy1)
     pool.close()
     pool.join()
