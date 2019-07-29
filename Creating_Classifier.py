@@ -153,7 +153,7 @@ if __name__ == "__main__":
     pool = multiprocessing.Pool(processes=4)
     split_into_parts = pool.starmap(split_into_parts,[(54716,32)])
     print("Type split_into_parts = ",type(split_into_parts))
-    result_list = pool.starmap(create_raw_data_for_classifier,[(0,100)])#product([(0,100)],repeat=2))
+    result_list = pool.starmap(create_raw_data_for_classifier,[(0,500)])#product([(0,100)],repeat=2))
     print("result_list type = ",type(result_list))
     f = open('raw_data_for_classifier.pkl', 'wb')   # Pickle file is newly created where foo1.py is
     pickle.dump(result_list, f,-1)          # dump data to f
