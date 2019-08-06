@@ -150,10 +150,12 @@ if __name__ == "__main__":
     # check if processes are alive 
     print("Process p2 is alive: {}".format(p2.is_alive()))
     '''
-    pool = multiprocessing.Pool(processes=4)
-    split_into_parts = pool.starmap(split_into_parts,[(54716,32)])
-    print("Type split_into_parts = ",type(split_into_parts))
-    result_list = pool.starmap(create_raw_data_for_classifier,[(0,500)])#product([(0,100)],repeat=2))
+    pool = multiprocessing.Pool(processes=6)
+    print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
+    #split_into_parts = pool.starmap(split_into_parts,[(54716,32)])
+    #print("Type split_into_parts = ",type(split_into_parts))
+    result_list = pool.starmap(create_raw_data_for_classifier,[(0,10000)])#product([(0,100)],repeat=2))
+    print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
     print("result_list type = ",type(result_list))
     f = open('raw_data_for_classifier.pkl', 'wb')   # Pickle file is newly created where foo1.py is
     pickle.dump(result_list, f,-1)          # dump data to f
@@ -167,6 +169,7 @@ if __name__ == "__main__":
 
     #print(result_list)
     result_accuracy1 = pool.starmap(get_the_classifier_accuracy,[raw_data_for_classifier])#product([(0,100)],repeat=2))
+    print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
     print("result_accuracy1 = ",result_accuracy1)
     pool.close()
     pool.join()
