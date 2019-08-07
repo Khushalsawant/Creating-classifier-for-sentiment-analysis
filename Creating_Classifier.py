@@ -89,8 +89,8 @@ def create_raw_data_for_classifier(start_pt,end_pt):
 
 def get_the_classifier_accuracy(raw_data):
     np.random.shuffle(raw_data)
-    training = raw_data[:1000]
-    testing = raw_data[-1000:]
+    training = raw_data[:4000]
+    testing = raw_data[-4000:]
     
     classifier = classifiers.NaiveBayesClassifier(training)
     
@@ -112,7 +112,7 @@ def convert_sec(n):
 def main_task():
     print("\n Task has been assigned to thread: {}".format(threading.current_thread().name))
     pool = multiprocessing.Pool(processes=6)
-    result_list = pool.starmap(create_raw_data_for_classifier,[(0,3000)])#product([(0,100)],repeat=2))
+    result_list = pool.starmap(create_raw_data_for_classifier,[(0,4000)])#product([(0,100)],repeat=2))
     print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
     print("result_list type = ",type(result_list))
     f = open('raw_data_for_classifier.pkl', 'wb')   # Pickle file is newly created where foo1.py is
