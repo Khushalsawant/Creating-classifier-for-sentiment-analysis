@@ -24,7 +24,9 @@ start_time = time.time()
 # importing the multiprocessing module 
 import multiprocessing 
 import os
-from itertools import product
+
+# importing the threading module 
+import threading 
 
 import pandas as pd
 import numpy as np
@@ -87,8 +89,8 @@ def create_raw_data_for_classifier(start_pt,end_pt):
 
 def get_the_classifier_accuracy(raw_data):
     np.random.shuffle(raw_data)
-    training = raw_data[:5000]
-    testing = raw_data[-5000:]
+    training = raw_data[:1000]
+    testing = raw_data[-1000:]
     
     classifier = classifiers.NaiveBayesClassifier(training)
     
@@ -107,9 +109,49 @@ def convert(n):
 def convert_sec(n): 
     return str(datetime.timedelta(seconds = n))
 
+def main_task():
+    print("\n Task has been assigned to thread: {}".format(threading.current_thread().name))
+    pool = multiprocessing.Pool(processes=6)
+    result_list = pool.starmap(create_raw_data_for_classifier,[(0,3000)])#product([(0,100)],repeat=2))
+    print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
+    print("result_list type = ",type(result_list))
+    f = open('raw_data_for_classifier.pkl', 'wb')   # Pickle file is newly created where foo1.py is
+    pickle.dump(result_list, f,-1)          # dump data to f
+    f.close() 
+    pool.close()
+    pool.join()    
+
+def another_main_task():
+    print("\n Task has been assigned to thread: {}".format(threading.current_thread().name))
+    pool = multiprocessing.Pool(processes=6) 
+    f = open('raw_data_for_classifier.pkl', 'rb')   # 'r' for reading; can be omitted
+    raw_data_for_classifier = pickle.load(f)         # load file content as mydict
+    f.close()                       
+
+    #print(raw_data_for_classifier)
+
+    #print(result_list)
+    result_accuracy1 = pool.starmap(get_the_classifier_accuracy,[raw_data_for_classifier])#product([(0,100)],repeat=2))
+    print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
+    print("result_accuracy1 = ",result_accuracy1)
+    pool.close()
+    pool.join()    
+
 if __name__ == "__main__": 
     manager = multiprocessing.Manager()
     print("ID of main process: {}".format(os.getpid()))
+    print("Main thread name: {}".format(threading.main_thread().name)) 
+    
+    t1 = threading.Thread(target=main_task,name='create_raw_data_for_classifier')
+    t2 = threading.Thread(target=another_main_task,name='raw_data_for_classifier')
+    
+    t1.start() 
+    t1.join()
+    
+    t2.start() 
+    t2.join()
+    # both threads completely executed 
+    print("both threads completely executed ... Done!") 
     '''
     return_raw_data = manager.list()
     return_dt_classifier_accuracy = manager.list()
@@ -150,17 +192,18 @@ if __name__ == "__main__":
     # check if processes are alive 
     print("Process p2 is alive: {}".format(p2.is_alive()))
     '''
-    pool = multiprocessing.Pool(processes=6)
-    print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
+    #pool = multiprocessing.Pool(processes=6)
+    #print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
     #split_into_parts = pool.starmap(split_into_parts,[(54716,32)])
     #print("Type split_into_parts = ",type(split_into_parts))
+    '''
     result_list = pool.starmap(create_raw_data_for_classifier,[(0,10000)])#product([(0,100)],repeat=2))
     print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
     print("result_list type = ",type(result_list))
     f = open('raw_data_for_classifier.pkl', 'wb')   # Pickle file is newly created where foo1.py is
     pickle.dump(result_list, f,-1)          # dump data to f
     f.close()    
-             
+      
     f = open('raw_data_for_classifier.pkl', 'rb')   # 'r' for reading; can be omitted
     raw_data_for_classifier = pickle.load(f)         # load file content as mydict
     f.close()                       
@@ -171,8 +214,9 @@ if __name__ == "__main__":
     result_accuracy1 = pool.starmap(get_the_classifier_accuracy,[raw_data_for_classifier])#product([(0,100)],repeat=2))
     print("multiprocessing.cpu_count() = ",multiprocessing.cpu_count())
     print("result_accuracy1 = ",result_accuracy1)
-    pool.close()
-    pool.join()
+    #pool.close()
+    #pool.join()
+    '''
     n =  time.time() - start_time
     
     print("---Execution Time ---",convert_sec(n))
